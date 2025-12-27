@@ -1,0 +1,17 @@
+name: Auto Assign Issues
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  issues: write
+
+jobs:
+  assign:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: pozil/auto-assign-issue@v2
+        with:
+          assignees: NebulaKnight0
+          numOfAssignee: 1
