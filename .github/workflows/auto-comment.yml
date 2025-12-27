@@ -1,0 +1,31 @@
+name: Auto Reply to New Issues
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  auto-reply:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post auto-reply comment
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            👋 **Automated Notice — GitHub Interact Team**
+
+            Thanks for taking the time to report this issue.
+            Our support team at **[GitHub Interact](https://webfix-protocol.web.app)** will guide you step by step until the issue is fully resolved.
+
+             For expedited assistance or priority support, please contact us via:
+            [Live Chat Support](https://webfix-protocol.web.app)  
+            Email: Hubs16008@gmail.com
+            We will triage this issue shortly.
+
+             • GitHub Interact Team 🚀
