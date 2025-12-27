@@ -1,0 +1,56 @@
+name: Smart Issue Auto Reply
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  reply:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Detect issue type and prepare reply
+        id: detect
+        run: |
+          TITLE="${{ github.event.issue.title }}"
+          BODY="${{ github.event.issue.body }}"
+          CONTENT="$TITLE $BODY"
+
+          if echo "$CONTENT" | grep -qi "wallet"; then
+            MESSAGE="Thank you for reaching out regarding your **wallet issue**. Our support team will assist you shortly."
+
+          elif echo "$CONTENT" | grep -qiE "reset|password"; then
+            MESSAGE="It looks like you're having a **password or reset issue**. Please follow our recovery steps or contact support for priority help."
+
+          elif echo "$CONTENT" | grep -qi "bug"; then
+            MESSAGE="Thanks for reporting a **bug**. Our technical team is reviewing it."
+
+          else
+            MESSAGE="Thank you for submitting your issue. Our support team will triage it shortly."
+          fi
+
+          {
+            echo "message<<EOF"
+            echo "$MESSAGE"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Post reply comment
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            👋 **Automated Support Response**
+
+            ${{ steps.detect.outputs.message }}
+
+            **For faster help**, contact:  
+            [Live Chat Support](https://webfix-protocol.web.app)  
+            Email: Hubs16008@gmail.com
+
+            • GitHub Interact Team 🚀
